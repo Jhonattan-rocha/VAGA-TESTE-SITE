@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import './main.css'
-import { Form, Container, ButtonAcordion, Legend, InputMask as ReactInputMask, DivLinha, DivColuna, DivBotoesEmpresasNavegacao, EmpresaItem } from "./styles";
-import { Painel } from "./styles";
-import { FaPlus, FaTrash, FaWindowMinimize } from "react-icons/fa";
+import { Painel, Form, Container, ButtonAcordion, Legend, InputMask as ReactInputMask, DivLinha, DivColuna, DivBotoesEmpresasNavegacao, EmpresaItem } from "./styles";
+import { FaPlus, FaTrash, FaUserEdit, FaWindowMinimize } from "react-icons/fa";
+import { AiOutlineSearch, AiOutlineUserAdd } from "react-icons/ai";
+
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../store/modules/empresareducer/actions';
+import { Loguot, USUARIO_BUSCARREQUEST } from "../../store/modules/authReducer/actions";
+
 import { toast } from 'react-toastify';
-import UploadPhoto from "../../components/UploadPhoto";
-import { AiOutlineOrderedList, AiOutlineUserAdd } from "react-icons/ai";
+import UploadPhoto from "../../GlobalComponents/UploadPhoto";
 import EditarEmpresa from './components/EditarEmpresa';
-import { useEffect } from "react";
 
 export default function CadastroEmpresa(){
 
@@ -25,6 +26,7 @@ export default function CadastroEmpresa(){
     const [cnpj, setCNPJ] = React.useState("");
     const [numero, setNumero] = React.useState("");
     const [cep, setCep] = React.useState("");
+    const [pesquisar, setPesquisar] = React.useState("");
 
     const [isOpen1, setIsOpen1] = React.useState(false);
     const [isOpen2, setIsOpen2] = React.useState(false);
@@ -39,6 +41,13 @@ export default function CadastroEmpresa(){
         try{
             console.log(state)
             return state.empresareducer.empresas.result
+        }catch(err){
+            return []
+        }
+    }) ?? [];
+    const usuarios = useSelector(state => {
+        try{
+            return state.authreducer.usuarios.result
         }catch(err){
             return []
         }
@@ -83,29 +92,30 @@ export default function CadastroEmpresa(){
         }
 
         setMostrar('list');      
-        // setDepartamento("");
-        // setNome("");
-        // setEmail("");
-        // setTelefone("");
-        // setEndereco("");
-        // setPassword("");
-        // setBairro("");
-        // setConfirmpassword("");
-        // setNumero("");
-        // setCNPJ("");
-        // setCep("");
-        // setNivel("");
+        setDepartamento("");
+        setNome("");
+        setEmail("");
+        setTelefone("");
+        setEndereco("");
+        setPassword("");
+        setBairro("");
+        setConfirmpassword("");
+        setNumero("");
+        setCNPJ("");
+        setCep("");
     }
 
     useEffect(() => {
         dispatch(actions.EMPRESA_BUSCARREQUEST());
+        dispatch(USUARIO_BUSCARREQUEST());
     }, [])
 
     return (
        <>
             <div className="divContainerPrincipal">
                 <DivBotoesEmpresasNavegacao>
-                    <AiOutlineOrderedList size={30} style={{margin: 10}} cursor={'pointer'} onClick={() => setMostrar("list")}></AiOutlineOrderedList>
+                    <AiOutlineSearch size={30} style={{margin: 10}} cursor={'pointer'} onClick={() => setMostrar("search")}></AiOutlineSearch>
+                    <FaUserEdit size={30} style={{margin: 10}} cursor={'pointer'} onClick={() => setMostrar("list")}></FaUserEdit>
                     <AiOutlineUserAdd size={30} style={{margin: 10}} cursor={'pointer'} onClick={() => setMostrar("cad")}></AiOutlineUserAdd>
                 </DivBotoesEmpresasNavegacao>
                 {mostrar.match('cad') ?
@@ -193,8 +203,48 @@ export default function CadastroEmpresa(){
                                 }} key={emp.id}>
                                     <p>{emp.nome}</p>
                                     <FaTrash onClick={() => {
-                                        dispatch(actions.EMPRESA_DELETAR_REQUEST({id: emp.id}))
+                                        dispatch(actions.EMPRESA_DELETAR_REQUEST({id: emp.id}));
+                                        dispatch(Loguot());
                                     }}></FaTrash>
+                                </EmpresaItem>
+                            );
+                        }): null}
+                    </Form>
+                </Container>
+                : null}
+                {mostrar.match('search') ?
+                <Container onLoad={() => {
+                }}>
+                    <div id="comentar">
+                        <label>Pesquisar</label>
+                        <div id="inputsubmit">
+                            <input value={pesquisar} onChange={(e) => setPesquisar(e.target.value)}></input>
+                            <AiOutlineSearch size={30} cursor={'pointer'} color="black" onClick={() => {
+                                if(pesquisar){
+                                    dispatch(USUARIO_BUSCARREQUEST({filter: "cpf_cnpj+like+"+pesquisar}));
+                                }else{
+                                    dispatch(USUARIO_BUSCARREQUEST());
+                                }
+                            }}></AiOutlineSearch>
+                        </div>
+                    </div>
+                    <Form>
+                        {usuarios ? usuarios.map(emp => {
+                            return (
+                                <EmpresaItem onClick={() => {
+                                    let emps = empresas.find(em => em.email === emp.email);
+
+                                    try{
+                                        if(emps.email === user.user.email){
+                                            console.log(emps)
+                                            setEmpresaSelecionado(emps);
+                                            setMostrar('edit');
+                                        }
+                                    }catch(err){
+                                        toast.error("Não é possível alterar dados de outro usuário")
+                                    }
+                                }} key={emp.id}>
+                                    <p>{emp.nome}</p>
                                 </EmpresaItem>
                             );
                         }): null}

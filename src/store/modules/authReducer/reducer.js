@@ -6,7 +6,8 @@ const initialState = {
     isLoggedIn: false,
     token: false,
     user: {},
-    isLoading: false
+    isLoading: false,
+    usuarios: {result: []}
 }
 // caso precise de mais de um reducer, usar a função combineReducer
 
@@ -30,6 +31,12 @@ export default function recuder(state = initialState, action){
             const newState = initialState;
             history.push("/Login", newState);
             toast.success("Loguot feito com sucesso");
+            return newState;
+        }
+
+        case type.USUARIO_BUSCAR_SUCCESS: {
+            const newState = {...state}
+            newState.usuarios = action.payload;
             return newState;
         }
 

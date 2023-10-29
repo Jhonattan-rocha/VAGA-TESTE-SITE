@@ -5,7 +5,7 @@ import { Painel } from "./styled";
 import { FaPlus, FaWindowMinimize } from "react-icons/fa";
 import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../../store/modules/empresareducer/actions';
-import UploadPhoto from "../../../components/UploadPhoto";
+import UploadPhoto from "../../../GlobalComponents/UploadPhoto";
 
 export default function EditarEmpresa({empresa = {}, close = () => {}}){
 
@@ -71,7 +71,7 @@ export default function EditarEmpresa({empresa = {}, close = () => {}}){
             <ContainerEmpresa>
                 <Form onSubmit={(e) => handleSubmit(e)}>
                     <Legend>
-                        <p>Editar de Empresa</p>  
+                        <p>Editar</p>  
                     </Legend>
                     <UploadPhoto setImg={setFoto} filter={'id+eq+'+empresa.id_foto}></UploadPhoto>
                     <ButtonAcordion type="button" className="accordion" onClick={(e) => setIsOpen1(!isOpen1)}>Dados do Empresa {isOpen1 ? <FaWindowMinimize/>: <FaPlus/>}</ButtonAcordion>

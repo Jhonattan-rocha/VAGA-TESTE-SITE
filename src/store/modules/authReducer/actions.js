@@ -34,3 +34,24 @@ export const setAuthToken = (payload) => {
     };
 };
   
+
+export function USUARIO_BUSCARREQUEST(payload){
+    return {
+        type: types.USUARIO_BUSCAR_REQUEST,
+        payload: payload,  
+    };
+}
+
+export function USUARIO_BUSCARSUCCESS(payload){
+    return {
+        type: types.USUARIO_BUSCAR_SUCCESS,
+        payload: payload,  
+    };
+}
+
+export function USUARIO_BUSCARFALURE(payload){
+    return {
+        type: types.USUARIO_BUSCAR_FALURE,
+        payload: payload,  
+    };
+}

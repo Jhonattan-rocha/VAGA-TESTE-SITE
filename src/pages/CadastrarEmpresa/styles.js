@@ -27,6 +27,30 @@ export const Container = styled.div`
     overflow: scroll;
     overflow-x: hidden;
     background-color: white;
+
+     #comentar{
+        display: flex;
+        flex-direction: column;
+        margin: 20px;
+        
+        input{
+            border-radius: 10px;
+            border: none;
+            padding: 5px;
+            width: 100%;
+        }
+
+        #inputsubmit{
+            border-radius: 10px;
+            border: 1px solid black;
+            padding: 5px;
+            width: 100%;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+        }
+    }
 `;
 
 export const Legend = styled.legend`
